@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <link rel='stylesheet' href='/webjars/bootstrap/4.3.1/css/bootstrap.min.css'>
+    <script type="text/javascript" src="/webjars/jquery/3.4.1/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="container">
+<p style="color: red" th:if="${error != null}" th:text="${error}"></p>
+
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Reserve Meeting Room</button>
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Reserve Meeting Room</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form  method="post"
+                          th:action="@{'/reserve/' + ${curWeek}}" th:object="${reservationForm}">
+                    <div class="form-group">
+                        <label for="select-room" class="col-form-label">Room:</label>
+                        <select id="select-room" th:field="*{roomId}">
+                            <option th:each="room : ${rooms}" th:text="${room.name}" th:value="${room.id}">room</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="select-date" class="col-form-label">Date:</label>
+                        <select id="select-date" th:field="*{date}">
+                            <option th:each="day : ${days}" th:text="${day}" th:value="${day}">room</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="select-time-from" class="col-form-label">Time from:</label>
+                        <select id="select-time-from" th:field="*{timeFrom}">
+                            <option th:each="time : ${times}" th:text="${time}" th:value="${time}">09:00</option>
+                        </select>
+                        <label for="select-time-to" class="col-form-label">Time to:</label>
+                        <select id="select-time-to" th:field="*{timeTo}">
+                            <option th:each="time : ${times}" th:text="${time}" th:value="${time}">10:00</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="description-text" class="col-form-label">Description:</label>
+                        <textarea class="form-control" id="description-text" th:field="*{reservationDescription}"></textarea>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Reserve</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<a th:href="@{'/' + ${prevWeek}}">
+    <button class="btn btn-primary" type="submit" name="prev">Prev</button>
+</a>
+<a th:href="@{'/' + ${nextWeek}}">
+    <button class="btn btn-primary" type="submit" name="nex">Next</button>
+</a>
+<div class="tab-content profile-tab float-right" id="myTabContent">
+    <h3 th:text="${user.login}">Login</h3>
+</div>
+
+<table class="table table-bordered table-hover container bg-light">
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col" th:each="day : ${days}">
+            <div th:text="${day}">Day</div>
+        </th>
+    </tr>
+    <tr th:each="time : ${times}">
+            <td scope="row" th:text="${time}">Time</td>
+            <td th:each="day : ${days}" >
+                <th:block th:each="resn : ${reservation}">
+                    <div th:if="${resn.timeFrom eq time and resn.date eq day}">
+                        <a th:href="@{'/description/' + ${resn.id}}" class="list-group-item text-success" th:style="'height:' + ${resn.getRatioDuration() * 50} +'px; position: absolute;'" >
+                            <h5 class="list-group-item-heading" th:text="${resn.user.login}">login</h5>
+                            <p class="list-group-item-text" th:text="${resn.room.name}">room</p>
+                        </a>
+                    </div>
+                </th:block>
+            </td>
+    </tr>
+</table>
+</div>
+</body>
+</html>
