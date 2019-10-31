@@ -25,3 +25,9 @@ mvn package
 java -jar reservation-1.0-SNAPSHOT.jar
 ```
 
+Default users:
+l: user1
+p: user1
+
+l: user2
+p: user2
