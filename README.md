@@ -26,6 +26,7 @@ java -jar reservation-1.0-SNAPSHOT.jar
 ```
 
 Default users:
+
 l: user1
 p: user1
 
